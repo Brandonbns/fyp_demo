@@ -1,58 +1,4 @@
-from flask import Flask,redirect, request, jsonify
-from flask_cors import CORS
-import joblib
-import sklearn
-import numpy as np
-import pandas as pd
-import json
-import math
-import os
-
-app = Flask(__name__)
-CORS(app)
-
-# @app.before_request
-# def enforce_https():
-#     if request.url.startswith('http://'):
-#         url = request.url.replace('http://', 'https://', 1)
-#         return redirect(url, code=301)
-
-
-print(os.path.join(app.root_path ,'models/smes/risk_classification_model.pkl'),"root path")
-
-risk_clf_model_data = joblib.load(open(os.path.join(app.root_path ,'models/smes/risk_classification_model.pkl'), 'rb'))
-credit_risk_clf_model_data = joblib.load(open(os.path.join(app.root_path ,'models\smes\credit_risk_classification_model.pkl'), 'rb'))
-default_predicition_model_data = joblib.load(open(os.path.join(app.root_path ,'models\smes\default_prediction_model.pkl'), 'rb'))
-
-
-# Initialising values for data preprocessing
-dummy_data = {
-    "term" : 26,
-    "sector" : 44,
-    "no_emp" : 14,
-    "loan_amount" : 300000,
-    "rural" : 1,
-    "interest_rate": 5.0,
-    "unemployment_rate": 4.5,
-    "prev_cpi": 201.3,
-    "prev_ipr": 124,
-    "cur_ratio": 1.207,
-    "debt_capital" : 0.551,
-    "debt_equity" : 0.4051,
-    "gross_marging": 72.22,
-    "operating_margin": 20.22,
-    "ebit_margin": 20.22,
-    "ebitda_margin": 25.24,
-    "pre_tax_profit": 14.45,
-    "net_profit_margin": 7.32,
-    "asset_turnover":  0.45,
-    "roe": 13.5,
-    "rote": 9.1,
-    "roa": 2.57,
-    "roi": 3.5,    
-}
-
-# dummy_data_json = json.dump(dummy_data)
+import math 
 
 # term indexes
 term_indexes = {
@@ -172,6 +118,7 @@ sectorMap = {
 "45":	9, "48":	11, "49":	11, "51":	10, "52":	8, "53":	8, "54":	8, "55":	0,
 "56":	0, "61":	11, "62":	4, "71":	8, "72":	7, "81":	8 }
 
+
 def getbins(sector):
     bins = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     sectors = [11,23,31,42,44,48,51,52,53,54,55,56,61,62,71,72,81]
@@ -209,16 +156,7 @@ def preprocessSMEData(data):
 
     # add macroeconomical indicators
     preprocessed += ei
-
-    print(preprocessed, '-----------preprocessed-----------')
-
     return preprocessed
-
-# print(preprocessSMEData(dummy_data), "-----------preprocessed----------------")
-
-
-
-
 
 # function for getting standard scaler
 def getScaled(x,mean,std):
@@ -261,100 +199,4 @@ def preprocessCRData(data):
     sector_bins = getCrSectorbins(sector)
     preprocessed += sector_bins
 
-    print(preprocessed, '-----------preprocessed-----------')
-
     return preprocessed
-
-
-
-# print(preprocessCRData(dummy_data), "--------------cr preprocessed ---------------------")
-
-
-sme_input_data = [ 26, 10, 10.55, 24, 1, 0.4187, 
-          0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          5.0, 7.02, 5.40, 200.0, 198.5     
-        ]
-
-cr_inputs_data = [11.0, -0.3114, -0.149, 0.0549, -0.6795, 0.43027, 0.8791, 0.885, 0.638, 0.543, -0.83, 0.032, -0.0117, 0.33, 0.351,
-                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
-
-# dummy inputs
-sme_inputs = np.array([preprocessSMEData(dummy_data)])
-
-
-cr_inputs = np.array([preprocessCRData(dummy_data)])
-
-
-def classifyRisk(inputs):
-    model, features = risk_clf_model_data
-    prediction = model.predict(inputs)
-
-    print(features, 'risk classification')
-    return prediction
-
-
-def classifyCreditRisk(inputs):
-    model, features = credit_risk_clf_model_data
-    prediction = model.predict(inputs)
-    return prediction
-
-print(classifyRisk(sme_inputs))
-print(classifyCreditRisk(cr_inputs))
-
-def PredictDefault(sme_inputs, cr_inputs):
-    # Geting the risk cluster
-    risk_clf_model, features =  risk_clf_model_data
-    risk_level =risk_clf_model.predict(sme_inputs)
-
-    # getting the credit risk
-    credit_risk_clf_model, features =  credit_risk_clf_model_data
-    credit_risk = credit_risk_clf_model.predict(cr_inputs)
-    
-    # appending credit risk and risk cluster
-    combined_inputs = list(sme_inputs[0])
-    print(combined_inputs,"final inputs for default prediction before adding")
-    
-    risk_level , credit_risk = risk_level[0], credit_risk[0]
-   
-    combined_inputs.append(risk_level)
-    combined_inputs.append(credit_risk)
-    final_input = np.array([combined_inputs])
-
-
-
-    print(combined_inputs,"final inputs for default prediction")
-
-    # performing default predictions
-    default_predicition_model , features, target = default_predicition_model_data
-    default = default_predicition_model.predict(final_input)
-
-    print(features, 'default prediction')
-
-    return({"risk_level":int(risk_level), "credit_risk":int(credit_risk), "default":int(default)})
-
-print(PredictDefault(sme_inputs, cr_inputs))
-
-[0, 0, 6.907755278982137, 12, 0, 0.528719448849035, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6.0, 0, 0, 0, 0]
-
-@app.route('/SmeDefault', methods=['POST'])
-def handle_post_request():
-    # Access the JSON data from the request body
-    data = request.json
-    print(data, '-------------------Recieved data-----------------------')
-    # dummy inputs
-    sme_inputs = np.array([preprocessSMEData(data)])
-    print(sme_inputs, "sme_inputs")
-    cr_inputs = np.array([preprocessCRData(data)])
-    print(cr_inputs, "cr_inputs")
-
-
-    predictions = PredictDefault(sme_inputs,cr_inputs)
-
-    # Process the data or perform any required operations
-    # ...
-
-    # Return a response (optional)
-    return jsonify({'sme': data['sme_name'], "predictions": predictions})
-
-if __name__ == '__main__':
-    app.run()

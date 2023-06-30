@@ -36,6 +36,34 @@ export default function SmeForm() {
     roi: 0,
   });
 
+  const [isError, setIsError] = useState(false);
+  const [formError, setFormError] = useState({
+    smeName: "",
+    sector: "",
+    term: "",
+    noEmp: "",
+    loanAmount: "",
+    rural: "",
+    interestRate: "",
+    unemploymentRate: "",
+    preCpi: "",
+    prevIpr: "",
+    curRatio: "",
+    debtCapital: "",
+    debtEquity: "",
+    grossMargin: "",
+    operatingMargin: "",
+    ebitMargin: "",
+    ebitdaMargin: "",
+    preTaxProfitMargin: "",
+    netProfitMargin: "",
+    assetTurnover: "",
+    roe: "",
+    rote: "",
+    roa: "",
+    roi: "",
+  });
+
   const clearForm = () => {
     setFormData({
       smeName: "",
@@ -72,14 +100,34 @@ export default function SmeForm() {
     setShowDefault(true);
   };
 
+  const handleRuralChange = (event) => {
+    const { checked } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      rural: checked ? 1 : 0,
+    }));
+  };
+
   const handleInputChange = (event) => {
     const { name, value, type, checked } = event.target;
     const newValue = type === "checkbox" ? checked : value;
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: newValue,
-    }));
+    if (name == "smeName") {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: newValue,
+      }));
+    } else if (!isNaN(parseFloat(value))) {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: parseFloat(newValue),
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: newValue,
+      }));
+    }
   };
 
   const goBack = () => {
@@ -87,8 +135,62 @@ export default function SmeForm() {
     setShowDefault(false);
   };
 
+  const validate = () => {
+    setIsError(false);
+    Object.entries(formData).map(([key, value]) => {
+      console.log(key, value, typeof value);
+      if (key == "smeName") {
+        if (typeof value === "string") {
+          setFormError((prevData) => ({
+            ...prevData,
+            [key]: "",
+          }));
+        } else {
+          setIsError(true);
+          setFormError((prevData) => ({
+            ...prevData,
+            [key]: "SME Name should be a string",
+          }));
+        }
+      } else if (key == "loanAmount") {
+        if (typeof value === "string") {
+          setIsError(true);
+          setFormError((prevData) => ({
+            ...prevData,
+            [key]: "Loan amount should be a number",
+          }));
+        } else if (parseFloat(value) <= 0) {
+          setIsError(true);
+          setFormError((prevData) => ({
+            ...prevData,
+            [key]: "Loan amount should be greater than 0",
+          }));
+        } else {
+          setFormError((prevData) => ({
+            ...prevData,
+            [key]: "",
+          }));
+        }
+      } else if (typeof value != "number" || isNaN(parseFloat(value))) {
+        setIsError(true);
+        setFormError((prevData) => ({
+          ...prevData,
+          [key]: `${key} should be a number`,
+        }));
+      } else {
+        setFormError((prevData) => ({
+          ...prevData,
+          [key]: "",
+        }));
+      }
+    });
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    // validate();
+    // console.log(formError, "form error");
+    // console.log(isError, "is error");
 
     let data = {
       sme_name: formData.smeName,
@@ -120,16 +222,18 @@ export default function SmeForm() {
     // Access captured form data from the state
     console.log(data);
 
-    axios
-      .post(BASE_API_URI + "/SmeDefault", data, { verify: false })
-      .then((response) => {
-        setPrediction(response.data);
-        setPageState(2);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error, "error happened");
-      });
+    if (!isError) {
+      axios
+        .post(BASE_API_URI + "/SmeDefault", data, { verify: false })
+        .then((response) => {
+          setPrediction(response.data);
+          setPageState(2);
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error(error, "error happened");
+        });
+    }
   };
 
   return (
@@ -147,14 +251,36 @@ export default function SmeForm() {
                 value={formData.smeName}
                 onChange={handleInputChange}
               />
+              <span className="formError">{formError.smeName}</span>
               <br />
               <label>Sector: </label>
-              <input
-                type="text"
-                name="sector"
-                value={formData.sector}
-                onChange={handleInputChange}
-              />
+              <select id="sector" name="sector" onChange={handleInputChange}>
+                <option value="">Select</option>
+                <option value="11">
+                  Agriculture, forestry, fishing and hunting
+                </option>
+                <option value="42">Wholesale trade</option>
+                <option value="22">Utilities</option>
+                <option value="23">Construction</option>
+                <option value="31">Manufacturing</option>
+                <option value="44">Retail trade</option>
+                <option value="48">Transportation and warehousing</option>
+                <option value="51">Information</option>
+                <option value="52">Finance and insurance</option>
+                <option value="55">
+                  Management of companies and enterprises
+                </option>
+                <option value="56">
+                  Administrative and support and waste management and
+                  remediation services
+                </option>
+                <option value="61">Educational services</option>
+                <option value="62">Health care and social assistance</option>
+                <option value="71">Arts, entertainment, and recreation</option>
+                <option value="72">Accommodation and food services</option>
+                <option value="81">Other</option>
+              </select>
+
               <br />
               <label>Number of Employees: </label>
               <input
@@ -163,13 +289,14 @@ export default function SmeForm() {
                 value={formData.noEmp}
                 onChange={handleInputChange}
               />
+              <span className="formError">{formError.noEmp}</span>
               <br />
               <label>Rural: </label>
               <input
-                type="text"
+                type="checkbox"
                 name="rural"
-                value={formData.rural}
-                onChange={handleInputChange}
+                checked={formData.rural}
+                onChange={handleRuralChange}
               />
             </fieldset>
             <fieldset>

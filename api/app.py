@@ -6,6 +6,10 @@ from flask import Flask, jsonify, render_template, request, send_from_directory
 from flask_cors import CORS
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 
+from modules.personal_loans.preprocess import bin_fico_scores
+from modules.smes.smeModels import *
+from modules.smes.smePreprocess import *
+
 app = Flask(__name__)
 CORS(app)
 
@@ -19,16 +23,12 @@ pl_scaler = pl_scaler_with_feature_names['scaler']
 pl_feature_names = pl_scaler_with_feature_names['feature_names']
 
 
-def bin_fico_scores(df):
-    ranges = [0, 580, 670, 740, 800, float('inf')]
-    labels = ['Poor', 'Fair', 'Good', 'Very Good', 'Exceptional']
-    df['last_fico_range_high'] = pd.cut(
-        df['last_fico_range_high'], bins=ranges, labels=labels, right=False)
-    label_encoder = LabelEncoder()
-    label_encoder.fit(labels)
-    df['last_fico_range_high'] = label_encoder.transform(
-        df['last_fico_range_high'])
-    return df
+risk_clf_model_data = joblib.load(open(os.path.join(
+    app.root_path, "models", "smes", 'risk_classification_model.pkl'), 'rb'))
+credit_risk_clf_model_data = joblib.load(open(os.path.join(
+    app.root_path, "models", "smes", 'credit_risk_classification_model.pkl'), 'rb'))
+default_predicition_model_data = joblib.load(open(os.path.join(
+    app.root_path, "models", "smes", 'default_prediction_model.pkl'), 'rb'))
 
 
 @app.route('/personal_loans', methods=['POST'])
@@ -60,6 +60,28 @@ def predict():
     prediction = pl_xgb_model.predict(sample_df[expected_order])[0]
 
     return jsonify({'loan_status': int(prediction), 'cluster_label': int(cluster_label)})
+
+
+@app.route('/SmeDefault', methods=['POST'])
+def handle_post_request():
+    risk_clf_model, features = risk_clf_model_data
+    credit_risk_clf_model, features = credit_risk_clf_model_data
+    default_predicition_model, features, target = default_predicition_model_data
+
+    # Access the JSON data from the request body
+    data = request.json
+    print(data, '-------------------Recieved data-----------------------')
+    # dummy inputs
+    sme_inputs = np.array([preprocessSMEData(data)])
+    cr_inputs = np.array([preprocessCRData(data)])
+    predictions = PredictDefault(
+        sme_inputs, cr_inputs, risk_clf_model, credit_risk_clf_model, default_predicition_model)
+
+    # Process the data or perform any required operations
+    # ...
+
+    # Return a response (optional)
+    return jsonify({'sme': data['sme_name'], "predictions": predictions})
 
 
 if __name__ == "__main__":

@@ -239,13 +239,15 @@ export default function SmeForm() {
   return (
     <>
       {pageState === 1 ? (
-        <div>
-          <h2>SmeForm</h2>
-          <form onSubmit={handleSubmit} id="smeForm">
+        <div className="smeFormContainer">
+          <h2 className="smeHeading">SmeForm</h2>
+          <form onSubmit={handleSubmit} id="smeForm" className="smeForm">
             <fieldset>
               <legend>SME Information</legend>
               <label> SME Name: </label>
+              <br />
               <input
+                className="right-10 "
                 type="text"
                 name="smeName"
                 value={formData.smeName}
@@ -254,7 +256,13 @@ export default function SmeForm() {
               <span className="formError">{formError.smeName}</span>
               <br />
               <label>Sector: </label>
-              <select id="sector" name="sector" onChange={handleInputChange}>
+              <br />
+              <select
+                id="sector"
+                className="right-10"
+                name="sector"
+                onChange={handleInputChange}
+              >
                 <option value="">Select</option>
                 <option value="11">
                   Agriculture, forestry, fishing and hunting
@@ -283,6 +291,7 @@ export default function SmeForm() {
 
               <br />
               <label>Number of Employees: </label>
+              <br />
               <input
                 type="text"
                 name="noEmp"
@@ -292,6 +301,7 @@ export default function SmeForm() {
               <span className="formError">{formError.noEmp}</span>
               <br />
               <label>Rural: </label>
+              <br />
               <input
                 type="checkbox"
                 name="rural"
@@ -302,6 +312,7 @@ export default function SmeForm() {
             <fieldset>
               <legend>Loan Information</legend>
               <label>Loan loanAmount: </label>
+              <br />
               <input
                 type="text"
                 name="loanAmount"
@@ -310,6 +321,7 @@ export default function SmeForm() {
               />
               <br />
               <label>Loan Term: </label>
+              <br />
               <input
                 type="text"
                 name="term"
@@ -318,6 +330,7 @@ export default function SmeForm() {
               />
               <br />
               <label>Interest Rate: </label>
+              <br />
               <input
                 type="text"
                 name="interestRate"
@@ -328,6 +341,7 @@ export default function SmeForm() {
             <fieldset>
               <legend>Macro Economic Indicators</legend>
               <label>Unemployement Rate: </label>
+              <br />
               <input
                 type="text"
                 name="unemploymentRate"
@@ -336,6 +350,7 @@ export default function SmeForm() {
               />
               <br />
               <label>Previous CPI: </label>
+              <br />
               <input
                 type="text"
                 name="preCpi"
@@ -344,6 +359,7 @@ export default function SmeForm() {
               />
               <br />
               <label>Previous Industrial Production Rate: </label>
+              <br />
               <input
                 type="text"
                 name="prevIpr"
@@ -354,6 +370,7 @@ export default function SmeForm() {
             <fieldset>
               <legend>Financial Indicators</legend>
               <label>Current Ratio: </label>
+              <br />
               <input
                 type="text"
                 name="curRatio"
@@ -362,6 +379,7 @@ export default function SmeForm() {
               />
               <br />
               <label>Debt/Capital Ratio: </label>
+              <br />
               <input
                 type="text"
                 name="debtCapital"
@@ -370,6 +388,7 @@ export default function SmeForm() {
               />
               <br />
               <label>Debt/Equity Ratio: </label>
+              <br />
               <input
                 type="text"
                 name="debtEquity"
@@ -378,6 +397,7 @@ export default function SmeForm() {
               />
               <br />
               <label>Gross Profit Margin: </label>
+              <br />
               <input
                 type="text"
                 name="grossMargin"
@@ -386,6 +406,7 @@ export default function SmeForm() {
               />
               <br />
               <label>Operating Margin: </label>
+              <br />
               <input
                 type="text"
                 name="operatingMargin"
@@ -394,6 +415,7 @@ export default function SmeForm() {
               />
               <br />
               <label>EBIT Margin: </label>
+              <br />
               <input
                 type="text"
                 name="ebitMargin"
@@ -402,6 +424,7 @@ export default function SmeForm() {
               />
               <br />
               <label>EBITDA Margin: </label>
+              <br />
               <input
                 type="text"
                 name="ebitdaMargin"
@@ -410,6 +433,7 @@ export default function SmeForm() {
               />
               <br />
               <label>Loan loanAmount: </label>
+              <br />
               <input
                 type="text"
                 name="preTaxProfitMargin"
@@ -418,6 +442,7 @@ export default function SmeForm() {
               />
               <br />
               <label>Net Profit Margin: </label>
+              <br />
               <input
                 type="text"
                 name="netProfitMargin"
@@ -426,6 +451,7 @@ export default function SmeForm() {
               />
               <br />
               <label>Asset Turnover: </label>
+              <br />
               <input
                 type="text"
                 name="assetTurnover"
@@ -434,6 +460,7 @@ export default function SmeForm() {
               />
               <br />
               <label>ROE: </label>
+              <br />
               <input
                 type="text"
                 name="roe"
@@ -442,6 +469,7 @@ export default function SmeForm() {
               />
               <br />
               <label>Return on Tangible Equity: </label>
+              <br />
               <input
                 type="text"
                 name="rote"
@@ -450,6 +478,7 @@ export default function SmeForm() {
               />
               <br />
               <label>ROA: </label>
+              <br />
               <input
                 type="text"
                 name="roa"
@@ -458,6 +487,7 @@ export default function SmeForm() {
               />
               <br />
               <label>ROI: </label>
+              <br />
               <input
                 type="text"
                 name="roi"

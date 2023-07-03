@@ -1,5 +1,6 @@
 import axios from "axios";
 import React from "react";
+import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
@@ -54,6 +55,28 @@ const LoansLandingPage = () => {
       });
   };
 
+  const displayCluster = () => {
+    if (cluster_label === 0) {
+      return <Alert variant="warning">Medium Risk</Alert>;
+    } else if (cluster_label === 1) {
+      return <Alert variant="danger">High Risk</Alert>;
+    } else if (cluster_label === 2) {
+      return <Alert variant="info">Low Risk</Alert>;
+    } else {
+      return <Alert variant="light" style={{ width: "10rem" }}></Alert>;
+    }
+  };
+
+  const displayStatus = () => {
+    if (loan_status === 0) {
+      return <Alert variant="success">Non default</Alert>;
+    } else if (loan_status === 1) {
+      return <Alert variant="danger">Default</Alert>;
+    } else {
+      return <Alert variant="light" style={{ width: "10rem" }}></Alert>;
+    }
+  };
+
   return (
     <Container>
       <Row>
@@ -91,7 +114,12 @@ const LoansLandingPage = () => {
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>Debt to Income Ratio:</Form.Label>
-                    <Form.Control readOnly name="dti" value={dti} />
+                    <Form.Control
+                      plaintext
+                      readOnly
+                      name="dti"
+                      value={(+dti).toFixed(2)}
+                    />
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>Last FICO Range High</Form.Label>
@@ -118,26 +146,41 @@ const LoansLandingPage = () => {
                     />
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col className="d-flex flex-column justify-content-center align-items-center">
                   <Button className="mb-3" type="submit" onClick={predict}>
                     Predict
                   </Button>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Cluster Label</Form.Label>
+                  <p>
+                    <b>Cluster Label</b>
+                  </p>
+                  {displayCluster()}
+                  <p>
+                    <b>Loan Status</b>
+                  </p>
+                  {displayStatus()}
+                  {/* <Form.Group className="mb-3">
+                    <Form.Label>
+                      <b>Cluster Label</b>
+                    </Form.Label>
+                    <Form.Label>displayCluster()</Form.Label>
                     <Form.Control
+                      plaintext
                       readOnly
                       name="cluster_label"
-                      value={cluster_label}
+                      value={displayCluster()}
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
-                    <Form.Label>Loan Status</Form.Label>
+                    <Form.Label>
+                      <b>Loan Status</b>
+                    </Form.Label>
                     <Form.Control
+                      plaintext
                       readOnly
                       name="loan_status"
-                      value={loan_status}
+                      value={displayStatus()}
                     />
-                  </Form.Group>
+                  </Form.Group> */}
                 </Col>
               </Form>
             </Card.Body>

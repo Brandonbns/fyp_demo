@@ -57,11 +57,11 @@ const LoansLandingPage = () => {
 
   const displayCluster = () => {
     if (cluster_label === 0) {
-      return <Alert variant="warning">Medium Risk</Alert>;
-    } else if (cluster_label === 1) {
-      return <Alert variant="danger">High Risk</Alert>;
-    } else if (cluster_label === 2) {
       return <Alert variant="info">Low Risk</Alert>;
+    } else if (cluster_label === 1) {
+      return <Alert variant="warning">Medium Risk</Alert>;
+    } else if (cluster_label === 2) {
+      return <Alert variant="danger">High Risk</Alert>;
     } else {
       return <Alert variant="light" style={{ width: "10rem" }}></Alert>;
     }

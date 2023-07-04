@@ -11,6 +11,7 @@ import { BASE_API_URI } from "../../commons/apiConfig";
 
 const LoansLandingPage = () => {
   const [annual_inc, setAnnualInc] = React.useState("");
+  const [term, setTerm] = React.useState("");
   const [debt_payments, setDebtPayments] = React.useState("");
   const [int_rate, setIntRate] = React.useState("");
   const [last_fico_range_high, setLastFicoRangeHigh] = React.useState("");
@@ -32,6 +33,7 @@ const LoansLandingPage = () => {
 
     const data = {
       annual_inc: +annual_inc,
+      term: +term,
       debt_payments: +debt_payments,
       dti: +dti,
       int_rate: +int_rate / 100,
@@ -143,6 +145,14 @@ const LoansLandingPage = () => {
                       name="loan_amnt"
                       value={loan_amnt}
                       onChange={(e) => setLoanAmnt(e.target.value)}
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Term</Form.Label>
+                    <Form.Control
+                      name="term"
+                      value={term}
+                      onChange={(e) => setTerm(e.target.value)}
                     />
                   </Form.Group>
                 </Col>

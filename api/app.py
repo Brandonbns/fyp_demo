@@ -27,8 +27,8 @@ risk_clf_model_data = joblib.load(open(os.path.join(
     app.root_path, "models", "smes", 'risk_classification_model.pkl'), 'rb'))
 credit_risk_clf_model_data = joblib.load(open(os.path.join(
     app.root_path, "models", "smes", 'credit_risk_classification_model.pkl'), 'rb'))
-# default_predicition_model_data = joblib.load(open(os.path.join(
-#     app.root_path, "models", "smes", 'default_prediction_model.pkl'), 'rb'))
+default_predicition_model_data = joblib.load(open(os.path.join(
+    app.root_path, "models", "smes", 'default_prediction_model.pkl'), 'rb'))
 
 
 @app.route('/personal_loans', methods=['POST'])

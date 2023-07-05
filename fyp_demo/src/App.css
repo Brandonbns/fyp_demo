@@ -32,3 +32,9 @@
   align-items: center;
   justify-items: center;
 }
+
+body {
+  background-image: url("assets/images/bg1.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+}

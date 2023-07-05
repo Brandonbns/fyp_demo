@@ -469,7 +469,7 @@ export default function SmeForm() {
                           onChange={handleInputChange}
                         />
                         <br />
-                        <label>Loan loanAmount: </label>
+                        <label>Pre Tax Profit Margin: </label>
                         <br />
                         <input
                           type="text"

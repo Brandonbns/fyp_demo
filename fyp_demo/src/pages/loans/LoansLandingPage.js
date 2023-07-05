@@ -168,29 +168,6 @@ const LoansLandingPage = () => {
                     <b>Loan Status</b>
                   </p>
                   {displayStatus()}
-                  {/* <Form.Group className="mb-3">
-                    <Form.Label>
-                      <b>Cluster Label</b>
-                    </Form.Label>
-                    <Form.Label>displayCluster()</Form.Label>
-                    <Form.Control
-                      plaintext
-                      readOnly
-                      name="cluster_label"
-                      value={displayCluster()}
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>
-                      <b>Loan Status</b>
-                    </Form.Label>
-                    <Form.Control
-                      plaintext
-                      readOnly
-                      name="loan_status"
-                      value={displayStatus()}
-                    />
-                  </Form.Group> */}
                 </Col>
               </Form>
             </Card.Body>

@@ -1,10 +1,10 @@
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import "./App.css";
-import LandingPage from "./pages/LandingPage";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import OptionMenu from "./pages/OptionMenu";
-import SmeLandingPage from "./pages/smes/SmeLandingPage";
 import LeasesLandingPage from "./pages/leases/LeasesLandingPage";
 import LoansLandingPage from "./pages/loans/LoansLandingPage";
+import SmeLandingPage from "./pages/smes/SmeLandingPage";
 
 function App() {
   return (

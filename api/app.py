@@ -27,8 +27,8 @@ risk_clf_model_data = joblib.load(open(os.path.join(
     app.root_path, "models", "smes", 'risk_classification_model.pkl'), 'rb'))
 credit_risk_clf_model_data = joblib.load(open(os.path.join(
     app.root_path, "models", "smes", 'credit_risk_classification_model.pkl'), 'rb'))
-default_predicition_model_data = joblib.load(open(os.path.join(
-    app.root_path, "models", "smes", 'default_prediction_model.pkl'), 'rb'))
+# default_predicition_model_data = joblib.load(open(os.path.join(
+#     app.root_path, "models", "smes", 'default_prediction_model.pkl'), 'rb'))
 
 # ls_scaler = joblib.load(
 #     open(os.path.join(app.root_path, "models", "leases", 'scaler.pkl'), 'rb'))
@@ -43,6 +43,7 @@ def predict():
     sample = {
         'loan_amnt': data.get('loan_amnt'),
         'int_rate': data.get('int_rate'),
+        'term': data.get('term'),
         'annual_inc': data.get('annual_inc'),
         'dti': data.get('dti'),
         'last_fico_range_high': data.get('last_fico_range_high'),
